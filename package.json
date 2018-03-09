@@ -1,10 +1,10 @@
 {
   "name": "pkg-bump",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "bump package.json dependency versions",
   "author": "semibran (Brandon Semilla)",
-  "license": "MIT",
   "repository": "semibran/pkg-bump",
+  "license": "MIT",
   "bin": "bin/pkg-bump.js",
   "keywords": [
     "npm",
