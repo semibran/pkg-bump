@@ -12,15 +12,15 @@ if (fs.existsSync(file)) {
   process.exit()
 }
 
-let names = []
-for (let name in pkg.dependencies) names.push(name)
-for (let name in pkg.devDependencies) names.push(name)
-for (let name in pkg.peerDependencies) names.push(name)
-for (let name in pkg.optionalDependencies) names.push(name)
+let deps = []
+for (let name in pkg.dependencies) deps.push(name)
+for (let name in pkg.devDependencies) deps.push(name)
+for (let name in pkg.peerDependencies) deps.push(name)
+for (let name in pkg.optionalDependencies) deps.push(name)
 
 let versions = {}
-let remaining = names.length
-for (let name of names) {
+let remaining = deps.length
+for (let name of deps) {
   let url = `http://registry.npmjs.org/${name}/latest`
   http.get(url, res => {
     let bufs = []
