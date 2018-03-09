@@ -1,12 +1,12 @@
 #!/usr/bin/env node
+const fs = require("fs")
 const http = require("http")
 const path = require("path")
-const fs = require("fs")
+const file = path.resolve("package.json")
 
 let pkg = null
-if (fs.existsSync("package.json")) {
-  src = path.resolve("package.json")
-  pkg = require(src)
+if (fs.existsSync(file)) {
+  pkg = require(file)
 } else {
   console.log("No package.json file found")
   process.exit()
@@ -57,6 +57,6 @@ function callback(err, versions) {
     pkg.optionalDependencies[name] = versions[name]
   }
 
-  let output = JSON.stringify(pkg, null, 2)
-  fs.writeFileSync("package.json", output)
+  let data = JSON.stringify(pkg, null, 2)
+  fs.writeFileSync(file, data)
 }
