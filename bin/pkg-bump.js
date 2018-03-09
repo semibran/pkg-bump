@@ -1,11 +1,14 @@
-const http = require("http")
-const fs = require("fs")
+#!/usr/bin/env node
+const { existsSync } = require("fs")
+const { resolve } = require("path")
+const { get } = require("http")
+
 let pkg = null
-if (fs.existsSync("package.json")) {
-  pkg = require("./package.json")
+if (existsSync("package.json")) {
+  path = resolve("package.json")
+  pkg = require(path)
 } else {
   console.log("No package.json file found")
-  process.exit()
 }
 
 let names = []
@@ -16,16 +19,16 @@ for (let name in pkg.optionalDependencies) names.push(name)
 
 let versions = {}
 let remaining = names.length
-for (let i = 0; i < names.length; i++) {
-  let name = names[i]
+for (let name of names) {
   let url = `http://registry.npmjs.org/${name}/latest`
-  http.get(url, res => {
+  get(url, res => {
     let bufs = []
     res
-      .on("data", data => bufs.push(data))
       .on("error", callback)
+      .on("data", data => bufs.push(data))
       .on("end", _ => {
-        let dep = JSON.parse(Buffer.concat(bufs))
+        let data = Buffer.concat(bufs)
+        let dep = JSON.parse(data)
         versions[name] = "^" + dep.version
         if (!--remaining) {
           callback(null, versions)
