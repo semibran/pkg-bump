@@ -16,6 +16,9 @@ $ cat package.json
 }
 
 $ pkg-bump
+babel  -> ^6.23.0
+rollup -> ^0.56.5
+
 $ npm i
 ```
 

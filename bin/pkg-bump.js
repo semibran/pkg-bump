@@ -57,6 +57,20 @@ function callback(err, versions) {
     pkg.optionalDependencies[name] = versions[name]
   }
 
+  let names = Object.keys(versions).sort()
+  let longest = names
+    .slice()
+    .sort((a, b) => b.length - a.length)[0]
+
+  for (let name of names) {
+    let version = versions[name]
+    let whitespace = ""
+    for (let i = name.length; i < longest.length; i++) {
+      whitespace += " "
+    }
+    console.log(`${name}${whitespace} -> ${version}`)
+  }
+
   let data = JSON.stringify(pkg, null, 2)
   fs.writeFileSync(file, data)
 }
