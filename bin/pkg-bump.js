@@ -12,15 +12,24 @@ if (fs.existsSync(file)) {
   process.exit()
 }
 
-let deps = []
-for (let name in pkg.dependencies) deps.push(name)
-for (let name in pkg.devDependencies) deps.push(name)
-for (let name in pkg.peerDependencies) deps.push(name)
-for (let name in pkg.optionalDependencies) deps.push(name)
+let names = []
+let types = [
+  "dependencies",
+  "devDependencies",
+  "peerDependencies",
+  "optionalDependencies"
+]
 
-let versions = {}
-let remaining = deps.length
-for (let name of deps) {
+for (let type of types) {
+  let deps = pkg[type]
+  for (let name in deps) {
+    names.push(name)
+  }
+}
+
+let latest = {}
+let remaining = names.length
+for (let name of names) {
   let url = `http://registry.npmjs.org/${name}/latest`
   http.get(url, res => {
     let bufs = []
@@ -30,45 +39,44 @@ for (let name of deps) {
       .on("end", _ => {
         let data = Buffer.concat(bufs)
         let dep = JSON.parse(data)
-        versions[name] = "^" + dep.version
+        latest[name] = "^" + dep.version
         if (!--remaining) {
-          callback(null, versions)
+          callback(null, latest)
         }
       })
   }).on("error", callback)
 }
 
-function callback(err, versions) {
+function callback(err, latest) {
   if (err) throw err
 
-  for (let name in pkg.dependencies) {
-    pkg.dependencies[name] = versions[name]
-  }
-
-  for (let name in pkg.devDependencies) {
-    pkg.devDependencies[name] = versions[name]
-  }
-
-  for (let name in pkg.peerDependencies) {
-    pkg.peerDependencies[name] = versions[name]
-  }
-
-  for (let name in pkg.optionalDependencies) {
-    pkg.optionalDependencies[name] = versions[name]
-  }
-
-  let names = Object.keys(versions).sort()
-  let longest = names
-    .slice()
-    .sort((a, b) => b.length - a.length)[0]
-
-  for (let name of names) {
-    let version = versions[name]
-    let whitespace = ""
-    for (let i = name.length; i < longest.length; i++) {
-      whitespace += " "
+  for (let type of types) {
+    let deps = pkg[type]
+    if (deps) {
+      let names = Object.keys(deps)
+      if (names.length) {
+        console.log(`${type}:`)
+        let longest = ""
+        for (let name of names) {
+          if (name.length > longest.length) {
+            longest = name
+          }
+        }
+        names.sort()
+        for (let name of names) {
+          let whitespace = ""
+          while (whitespace.length < longest.length - name.length) {
+            whitespace += " "
+          }
+          let change = `${deps[name]} -> ${latest[name]}`
+          if (deps[name] === latest[name]) {
+            change = `${latest[name]} (unchanged)`
+          }
+          deps[name] = latest[name]
+          console.log(`* ${name}${whitespace}  ${change}`)
+        }
+      }
     }
-    console.log(`${name}${whitespace} -> ${version}`)
   }
 
   let data = JSON.stringify(pkg, null, 2)
