@@ -10,14 +10,15 @@ $ cat package.json
   "version": "0.0.0",
   "description": "an example package",
   "devDependencies": {
-    "babel": "*",
-    "rollup": "*"
+    "rollup": "^0.55.5",
+    "rollup-plugin-node-resolve": "^2.1.1"
   }
 }
 
 $ pkg-bump
-* babel   * -> ^6.23.0
-* rollup  * -> ^0.56.5
+devDependencies:
+* rollup                      ^0.55.5 -> ^0.56.5
+* rollup-plugin-node-resolve  ^2.1.1 -> ^3.2.0
 
 $ npm i
 ```
