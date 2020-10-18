@@ -12,6 +12,11 @@ if (fs.existsSync(file)) {
 	process.exit()
 }
 
+if (process.argv[2] === "-v") {
+	console.log("v" + pkg.version)
+	process.exit()
+}
+
 let names = []
 let types = [
 	"dependencies",
