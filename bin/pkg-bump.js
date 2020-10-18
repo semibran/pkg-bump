@@ -32,6 +32,11 @@ for (let type of types) {
 	}
 }
 
+if (!names.length) {
+	console.log("No dependencies found in package.json")
+	process.exit()
+}
+
 let latest = {}
 let remaining = names.length
 for (let name of names) {
@@ -53,29 +58,48 @@ for (let name of names) {
 
 function callback(err, latest) {
 	if (err) throw err
+	let change = false
+	for (let type of types) {
+		let deps = pkg[type]
+		if (!deps) continue
+		let names = Object.keys(deps)
+		for (let name of names) {
+			if (deps[name] !== latest[name]) {
+				change = true
+			}
+		}
+	}
+	if (!change) {
+		console.log("All dependencies up to date")
+		return
+	}
 	for (let type of types) {
 		let deps = pkg[type]
 		if (!deps) continue
 		let names = Object.keys(deps)
 		if (!names.length) continue
-		console.log(`${type}:`)
 		let maxlen = ""
+		let change = false
 		for (let name of names) {
-			if (name.length <= maxlen) continue
-			maxlen = name
+			if (deps[name] !== latest[name]) {
+				change = true
+			}
+			if (name.length > maxlen) {
+				maxlen = name
+			}
 		}
+		if (!change) continue
 		names.sort()
+		console.log(`${type}:`)
 		for (let name of names) {
+			if (deps[name] === latest[name]) continue
+			deps[name] = latest[name]
 			let whitespace = ""
 			while (whitespace.length < maxlen - name.length) {
 				whitespace += " "
 			}
 			let change = `${deps[name]} -> ${latest[name]}`
-			if (deps[name] === latest[name]) {
-				change = `${latest[name]} (unchanged)`
-			}
-			deps[name] = latest[name]
-			console.log(`* ${name}${whitespace}  ${change}`)
+			console.log(`* ${name}${whitespace}   ${change}`)
 		}
 		console.log("")
 	}
