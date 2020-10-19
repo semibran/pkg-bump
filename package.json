@@ -1,6 +1,6 @@
 {
   "name": "pkg-bump",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "bump package.json dependency versions",
   "author": "semibran (Brandon Semilla)",
   "repository": "semibran/pkg-bump",
