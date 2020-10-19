@@ -23,6 +23,7 @@ devDependencies:
 * rollup-plugin-node-resolve   ^2.1.1 -> ^9.0.0
 
 $ npm i
+$ git init
 ```
 
 Install globally using npm:

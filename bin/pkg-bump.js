@@ -78,14 +78,14 @@ function callback(err, latest) {
 		if (!deps) continue
 		let names = Object.keys(deps)
 		if (!names.length) continue
-		let maxlen = ""
+		let maxlen = 0
 		let change = false
 		for (let name of names) {
 			if (deps[name] !== latest[name]) {
 				change = true
 			}
 			if (name.length > maxlen) {
-				maxlen = name
+				maxlen = name.length
 			}
 		}
 		if (!change) continue
