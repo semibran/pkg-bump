@@ -19,8 +19,8 @@ $ cat package.json
 
 $ pkg-bump
 devDependencies:
-* rollup                        ^0.55.5 -> ^2.32.1
 * @rollup/plugin-node-resolve   ^2.1.1 -> ^9.0.0
+* rollup                        ^0.55.5 -> ^2.32.1
 
 $ npm i
 $ git init
