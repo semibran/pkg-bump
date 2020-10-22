@@ -1,7 +1,7 @@
 {
   "name": "pkg-bump",
-  "version": "1.2.1",
-  "description": "bump package.json dependency versions",
+  "version": "1.2.2",
+  "description": "tiny package.json dependency version bumper",
   "author": "semibran (Brandon Semilla)",
   "repository": "semibran/pkg-bump",
   "license": "MIT",
