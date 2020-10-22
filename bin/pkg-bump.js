@@ -93,13 +93,13 @@ function callback(err, latest) {
 		console.log(`${type}:`)
 		for (let name of names) {
 			if (deps[name] === latest[name]) continue
-			deps[name] = latest[name]
 			let whitespace = ""
 			while (whitespace.length < maxlen - name.length) {
 				whitespace += " "
 			}
 			let change = `${deps[name]} -> ${latest[name]}`
 			console.log(`* ${name}${whitespace}   ${change}`)
+			deps[name] = latest[name]
 		}
 		console.log("")
 	}
