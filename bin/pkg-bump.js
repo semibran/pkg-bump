@@ -58,48 +58,43 @@ for (let name of names) {
 
 function callback(err, latest) {
 	if (err) throw err
+	let cache = {}
 	let change = false
 	for (let type of types) {
 		let deps = pkg[type]
 		if (!deps) continue
 		let names = Object.keys(deps)
 		for (let name of names) {
-			if (deps[name] !== latest[name]) {
-				change = true
+			if (deps[name] === latest[name]) continue
+			if (!cache[type]) {
+				cache[type] = [ name ]
+			} else {
+				cache[type].push(name)
 			}
+			change = true
 		}
 	}
 	if (!change) {
 		console.log("All dependencies up to date")
 		return
 	}
-	for (let type of types) {
-		let deps = pkg[type]
-		if (!deps) continue
-		let names = Object.keys(deps)
-		if (!names.length) continue
+	for (let type in cache) {
+		let names = cache[type].sort()
 		let maxlen = 0
-		let change = false
 		for (let name of names) {
-			if (deps[name] !== latest[name]) {
-				change = true
-			}
 			if (name.length > maxlen) {
 				maxlen = name.length
 			}
 		}
-		if (!change) continue
-		names.sort()
 		console.log(`${type}:`)
 		for (let name of names) {
-			if (deps[name] === latest[name]) continue
 			let whitespace = ""
 			while (whitespace.length < maxlen - name.length) {
 				whitespace += " "
 			}
-			let change = `${deps[name]} -> ${latest[name]}`
+			let change = `${pkg[type][name]} -> ${latest[name]}`
 			console.log(`* ${name}${whitespace}   ${change}`)
-			deps[name] = latest[name]
+			pkg[type][name] = latest[name]
 		}
 		console.log("")
 	}
