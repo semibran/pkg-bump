@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const fs = require("fs")
-const http = require("http")
+const https = require("https")
 const path = require("path")
 const file = path.resolve("package.json")
 
@@ -40,8 +40,8 @@ if (!names.length) {
 let latest = {}
 let remaining = names.length
 for (let name of names) {
-	let url = `http://registry.npmjs.org/${name}/latest`
-	http.get(url, res => {
+	let url = `https://registry.npmjs.org/${name}/latest`
+	https.get(url, res => {
 		let bufs = []
 		res.on("error", callback)
 			.on("data", data => bufs.push(data))
